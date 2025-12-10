@@ -1,0 +1,24 @@
+# Core Framework
+Django==4.2.7
+
+# Image Processing
+Pillow==10.1.0
+
+# HTTP Requests (for SMS integration)
+requests==2.31.0
+
+# OTP Generation
+pyotp==2.9.0
+
+# Optional: For better development experience
+python-decouple==3.8
+
+# Optional: For production deployment
+gunicorn==21.2.0
+whitenoise==6.6.0
+
+# Optional: For PostgreSQL (production database)
+psycopg2-binary==2.9.9
+
+# Optional: For Redis caching
+django-redis==5.4.0
