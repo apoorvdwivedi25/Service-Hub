@@ -1,0 +1,58 @@
+{% extends 'services/base.html' %}
+
+{% block title %}Login - {{ user_type|title }}{% endblock %}
+
+{% block content %}
+<div class="hero min-h-[70vh]">
+    <div class="hero-content">
+        <div class="card glass-effect w-full max-w-md">
+            <div class="card-body">
+                <div class="text-center mb-6">
+                    <div class="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center mx-auto mb-4">
+                        <i class="fas {% if user_type == 'provider' %}fa-briefcase{% else %}fa-user{% endif %} text-4xl text-white"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold">{{ user_type|title }} Login</h2>
+                    <p class="text-base-content/70 mt-2">Enter your credentials to continue</p>
+                </div>
+                
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">Phone Number</span>
+                        </label>
+                        {{ form.username }}
+                    </div>
+                    
+                    <div class="form-control mt-4">
+                        <label class="label">
+                            <span class="label-text">Password</span>
+                            <a href="{% url 'forgot_password_step1' user_type=user_type %}" class="label-text-alt link link-hover link-primary">
+                                Forgot password?
+                            </a>
+                        </label>
+                        {{ form.password }}
+                    </div>
+                    
+                    <div class="form-control mt-6">
+                        <button type="submit" class="btn btn-primary btn-block hover-lift">
+                            <i class="fas fa-sign-in-alt mr-2"></i> Login
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="divider">OR</div>
+                
+                <div class="text-center">
+                    <p class="text-base-content/70">
+                        Don't have an account?
+                        <a href="{% if user_type == 'provider' %}{% url 'register_provider' %}{% else %}{% url 'register_customer' %}{% endif %}" 
+                           class="link link-primary font-semibold">Register here</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

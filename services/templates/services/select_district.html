@@ -1,0 +1,75 @@
+{% extends 'services/base.html' %}
+
+{% block title %}Services - ServiceHub{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <div class="flex justify-between items-center flex-wrap gap-4">
+        <div>
+            <h1 class="text-4xl font-bold mb-2">Welcome, {{ user.name }}! 👋</h1>
+            <p class="text-xl text-base-content/70">
+                <i class="fas fa-map-marker-alt text-primary mr-2"></i>
+                Showing services in: <span class="badge badge-primary badge-lg">{{ selected_district }}</span>
+            </p>
+        </div>
+        <a href="{% url 'select_district' %}" class="btn btn-outline btn-primary">
+            <i class="fas fa-map-marked-alt mr-2"></i>
+            Change District
+        </a>
+    </div>
+</div>
+
+<div class="divider"></div>
+
+<h2 class="text-3xl font-bold mb-6">Choose a Service</h2>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    {% for service in services %}
+    <a href="{% url 'service_providers_list' service_code=service.code %}" 
+       class="card glass-effect hover-lift card-shine cursor-pointer group">
+        <div class="card-body items-center text-center p-8">
+            <div class="w-24 h-24 rounded-full bg-gradient-to-br {{ service.gradient }} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <i class="fas fa-{{ service.icon }} text-5xl text-white animate-icon"></i>
+            </div>
+            <h3 class="card-title text-2xl">{{ service.name }}</h3>
+            <div class="badge badge-ghost">Find Providers</div>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+
+<div class="card glass-effect mt-12">
+    <div class="card-body">
+        <h3 class="card-title text-2xl mb-4">
+            <i class="fas fa-info-circle text-info mr-2"></i>
+            How It Works
+        </h3>
+        <div class="steps steps-vertical lg:steps-horizontal w-full">
+            <div class="step step-primary">
+                <div class="text-left">
+                    <p class="font-bold">Select Service</p>
+                    <p class="text-sm opacity-70">Choose from available services</p>
+                </div>
+            </div>
+            <div class="step step-primary">
+                <div class="text-left">
+                    <p class="font-bold">Browse Providers</p>
+                    <p class="text-sm opacity-70">View verified professionals</p>
+                </div>
+            </div>
+            <div class="step step-primary">
+                <div class="text-left">
+                    <p class="font-bold">Check Reviews</p>
+                    <p class="text-sm opacity-70">Read customer feedback</p>
+                </div>
+            </div>
+            <div class="step step-primary">
+                <div class="text-left">
+                    <p class="font-bold">Contact & Hire</p>
+                    <p class="text-sm opacity-70">Get in touch directly</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

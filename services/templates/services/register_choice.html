@@ -1,0 +1,42 @@
+{% extends 'services/base.html' %}
+
+{% block title %}Choose Registration Type{% endblock %}
+
+{% block content %}
+<div class="hero min-h-[70vh]">
+    <div class="hero-content text-center">
+        <div class="max-w-4xl w-full">
+            <h1 class="text-5xl font-bold mb-4">Choose Registration Type</h1>
+            <p class="text-xl mb-12 text-base-content/70">Select how you want to register</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+                <a href="{% url 'register_customer' %}" class="card glass-effect hover-lift card-shine group">
+                    <div class="card-body items-center text-center p-12">
+                        <div class="w-32 h-32 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-user-plus text-6xl text-white"></i>
+                        </div>
+                        <h3 class="card-title text-3xl mb-2">Customer</h3>
+                        <p class="text-base-content/70">Register to find services</p>
+                    </div>
+                </a>
+                
+                <a href="{% url 'register_provider' %}" class="card glass-effect hover-lift card-shine group">
+                    <div class="card-body items-center text-center p-12">
+                        <div class="w-32 h-32 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-id-card text-6xl text-white"></i>
+                        </div>
+                        <h3 class="card-title text-3xl mb-2">Service Provider</h3>
+                        <p class="text-base-content/70">Register to offer services</p>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="mt-8">
+                <a href="{% url 'home' %}" class="btn btn-ghost">
+                    <i class="fas fa-arrow-left mr-2"></i> Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

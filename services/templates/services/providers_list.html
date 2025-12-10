@@ -1,0 +1,335 @@
+{% extends 'services/base.html' %}
+
+{% block title %}{{ service_name }} Providers - ServiceHub{% endblock %}
+
+{% block extra_css %}
+<style>
+    .filter-card {
+        position: sticky;
+        top: 80px;
+        z-index: 10;
+    }
+    
+    .star-rating {
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .star-rating:hover {
+        transform: scale(1.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="mb-6">
+    <a href="{% url 'customer_home' %}" class="btn btn-ghost">
+        <i class="fas fa-arrow-left mr-2"></i> Back to Services
+    </a>
+</div>
+
+<!-- Header Card -->
+<div class="card glass-effect mb-6">
+    <div class="card-body text-center">
+        <h1 class="text-4xl font-bold mb-2">
+            <i class="fas fa-users text-primary mr-3"></i>
+            {{ service_name }} Service Providers
+        </h1>
+        <p class="text-xl text-base-content/70">
+            <i class="fas fa-map-marker-alt text-success mr-2"></i>
+            {{ selected_district }}
+        </p>
+        <div class="badge badge-info badge-lg mt-4">
+            {{ providers.count }} Provider{{ providers.count|pluralize }} Found
+        </div>
+    </div>
+</div>
+
+<!-- Filters Card -->
+<div class="card glass-effect mb-6 filter-card">
+    <div class="card-body">
+        <h3 class="card-title mb-4">
+            <i class="fas fa-filter text-primary mr-2"></i>
+            Filter & Sort Providers
+        </h3>
+        
+        <form method="GET" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Search by Name -->
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text font-semibold">
+                            <i class="fas fa-search text-primary mr-2"></i>Search by Name
+                        </span>
+                    </label>
+                    <input 
+                        type="text" 
+                        name="search" 
+                        class="input input-bordered w-full" 
+                        placeholder="Enter provider name..."
+                        value="{{ search_name }}"
+                    >
+                </div>
+                
+                <!-- Filter by Rating -->
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text font-semibold">
+                            <i class="fas fa-star text-warning mr-2"></i>Minimum Rating
+                        </span>
+                    </label>
+                    <select name="rating" class="select select-bordered w-full">
+                        <option value="">All Ratings</option>
+                        <option value="4.5" {% if rating_filter == "4.5" %}selected{% endif %}>
+                            ⭐ 4.5+ Stars
+                        </option>
+                        <option value="4.0" {% if rating_filter == "4.0" %}selected{% endif %}>
+                            ⭐ 4.0+ Stars
+                        </option>
+                        <option value="3.5" {% if rating_filter == "3.5" %}selected{% endif %}>
+                            ⭐ 3.5+ Stars
+                        </option>
+                        <option value="3.0" {% if rating_filter == "3.0" %}selected{% endif %}>
+                            ⭐ 3.0+ Stars
+                        </option>
+                        <option value="2.0" {% if rating_filter == "2.0" %}selected{% endif %}>
+                            ⭐ 2.0+ Stars
+                        </option>
+                    </select>
+                </div>
+                
+                <!-- Sort By -->
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text font-semibold">
+                            <i class="fas fa-sort text-info mr-2"></i>Sort By
+                        </span>
+                    </label>
+                    <select name="sort" class="select select-bordered w-full">
+                        <option value="rating" {% if sort_by == "rating" %}selected{% endif %}>
+                            Highest Rating
+                        </option>
+                        <option value="reviews" {% if sort_by == "reviews" %}selected{% endif %}>
+                            Most Reviews
+                        </option>
+                        <option value="name" {% if sort_by == "name" %}selected{% endif %}>
+                            Name (A-Z)
+                        </option>
+                        <option value="newest" {% if sort_by == "newest" %}selected{% endif %}>
+                            Newest First
+                        </option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="flex gap-3 justify-end">
+                <a href="{% url 'service_providers_list' service_code=service_code %}" 
+                   class="btn btn-ghost">
+                    <i class="fas fa-redo mr-2"></i>
+                    Reset Filters
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search mr-2"></i>
+                    Apply Filters
+                </button>
+            </div>
+        </form>
+        
+        <!-- Active Filters Display -->
+        {% if search_name or rating_filter %}
+        <div class="divider">Active Filters</div>
+        <div class="flex flex-wrap gap-2">
+            {% if search_name %}
+            <div class="badge badge-primary badge-lg gap-2">
+                <i class="fas fa-user"></i>
+                Name: "{{ search_name }}"
+                <a href="?rating={{ rating_filter }}&sort={{ sort_by }}" class="ml-2">
+                    <i class="fas fa-times"></i>
+                </a>
+            </div>
+            {% endif %}
+            
+            {% if rating_filter %}
+            <div class="badge badge-warning badge-lg gap-2">
+                <i class="fas fa-star"></i>
+                Rating: {{ rating_filter }}+ Stars
+                <a href="?search={{ search_name }}&sort={{ sort_by }}" class="ml-2">
+                    <i class="fas fa-times"></i>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Providers Grid -->
+{% if providers %}
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    {% for provider in providers %}
+    <div class="card glass-effect hover-lift card-shine">
+        <div class="card-body">
+            <!-- Provider Header -->
+            <div class="flex items-start gap-4 pb-4 border-b border-base-300">
+                <div class="avatar placeholder">
+                    <div class="w-20 h-20 rounded-full {% if provider.photo %}{% else %}bg-gradient-to-br from-primary to-secondary{% endif %}">
+                        {% if provider.photo %}
+                        <img src="{{ provider.photo.url }}" alt="{{ provider.user.name }}">
+                        {% else %}
+                        <span class="text-3xl text-white">{{ provider.user.name|first|upper }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="flex-1">
+                    <h3 class="text-2xl font-bold">{{ provider.user.name }}</h3>
+                    <p class="text-base-content/70">
+                        <i class="fas fa-phone text-primary mr-2"></i>
+                        {{ provider.user.phone_number }}
+                    </p>
+                    {% if provider.is_verified %}
+                    <div class="badge badge-success gap-2 mt-2">
+                        <i class="fas fa-check-circle"></i>
+                        Verified Provider
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Provider Details -->
+            <div class="space-y-3 my-4">
+                <div class="flex items-start gap-3">
+                    <i class="fas fa-map-marker-alt text-primary mt-1"></i>
+                    <div class="flex-1">
+                        <p class="text-sm text-base-content/60">Address</p>
+                        <p>{{ provider.address }}</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start gap-3">
+                    <i class="fas fa-calendar text-info mt-1"></i>
+                    <div class="flex-1">
+                        <p class="text-sm text-base-content/60">Member Since</p>
+                        <p>{{ provider.created_at|date:"d M, Y" }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Services Offered -->
+            <div class="card bg-base-200">
+                <div class="card-body p-4">
+                    <h4 class="font-semibold mb-2">
+                        <i class="fas fa-tools text-primary mr-2"></i>
+                        Services Offered
+                    </h4>
+                    <div class="flex flex-wrap gap-2">
+                        {% for service in provider.get_services %}
+                        <div class="badge badge-primary">{{ service }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Rating Display -->
+            <div class="card bg-gradient-to-br from-amber-500 to-orange-500 text-white mt-4">
+                <div class="card-body p-4 flex-row items-center justify-between">
+                    <div>
+                        <div class="flex gap-1 text-2xl mb-1">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= provider.rating %}
+                                    <i class="fas fa-star"></i>
+                                {% else %}
+                                    <i class="far fa-star"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <p class="text-sm opacity-90">{{ provider.total_reviews }} review{{ provider.total_reviews|pluralize }}</p>
+                    </div>
+                    <div class="text-5xl font-bold">{{ provider.rating }}</div>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="card-actions justify-end mt-4">
+                {% if provider.user_has_reviewed %}
+                <a href="{% url 'add_review' provider_phone=provider.user.phone_number %}" 
+                   class="btn btn-outline btn-warning">
+                    <i class="fas fa-edit mr-2"></i>
+                    Edit Review
+                </a>
+                {% else %}
+                <a href="{% url 'add_review' provider_phone=provider.user.phone_number %}" 
+                   class="btn btn-primary">
+                    <i class="fas fa-star mr-2"></i>
+                    Add Review
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% else %}
+<!-- No Results -->
+<div class="card glass-effect">
+    <div class="card-body text-center py-20">
+        <div class="text-8xl mb-6">
+            <i class="fas fa-search text-warning animate-icon"></i>
+        </div>
+        <h3 class="text-3xl font-bold mb-4">No Providers Found</h3>
+        
+        {% if search_name or rating_filter %}
+        <p class="text-xl text-base-content/70 mb-2">
+            No providers match your current filters.
+        </p>
+        <p class="text-base-content/60 mb-6">
+            Try adjusting your search criteria or clear filters.
+        </p>
+        <div class="flex gap-4 justify-center">
+            <a href="{% url 'service_providers_list' service_code=service_code %}" 
+               class="btn btn-primary">
+                <i class="fas fa-redo mr-2"></i>
+                Clear All Filters
+            </a>
+        </div>
+        {% else %}
+        <p class="text-xl text-base-content/70 mb-2">
+            No verified {{ service_name }} providers in {{ selected_district }}.
+        </p>
+        <div class="flex gap-4 justify-center flex-wrap">
+            <a href="{% url 'customer_home' %}" class="btn btn-primary">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Browse Other Services
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Auto-submit form on sort/rating change for better UX
+    document.addEventListener('DOMContentLoaded', function() {
+        const ratingSelect = document.querySelector('select[name="rating"]');
+        const sortSelect = document.querySelector('select[name="sort"]');
+        
+        if (ratingSelect) {
+            ratingSelect.addEventListener('change', function() {
+                // Optional: Auto-submit on rating change
+                // this.form.submit();
+            });
+        }
+        
+        if (sortSelect) {
+            sortSelect.addEventListener('change', function() {
+                // Optional: Auto-submit on sort change
+                // this.form.submit();
+            });
+        }
+    });
+</script>
+{% endblock %}

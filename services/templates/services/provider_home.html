@@ -1,0 +1,213 @@
+{% extends 'services/base.html' %}
+
+{% block title %}Provider Dashboard - ServiceHub{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Welcome Card -->
+    <div class="card glass-effect">
+        <div class="card-body">
+            <div class="flex flex-col md:flex-row items-center gap-6">
+                <div class="avatar placeholder">
+                    <div class="w-32 h-32 rounded-full {% if provider.photo %}{% else %}bg-gradient-to-br from-primary to-secondary{% endif %}">
+                        {% if provider.photo %}
+                        <img src="{{ provider.photo.url }}" alt="{{ provider.user.name }}">
+                        {% else %}
+                        <span class="text-5xl text-white">{{ provider.user.name|first|upper }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="flex-1 text-center md:text-left">
+                    <h1 class="text-4xl font-bold mb-2">{{ provider.user.name }}</h1>
+                    <p class="text-xl text-base-content/70 mb-3">
+                        <i class="fas fa-phone text-primary mr-2"></i>
+                        {{ provider.user.phone_number }}
+                    </p>
+                    
+                    {% if provider.is_verified %}
+                    <div class="badge badge-success badge-lg gap-2">
+                        <i class="fas fa-check-circle"></i>
+                        Verified Provider
+                    </div>
+                    {% else %}
+                    <div class="badge badge-warning badge-lg gap-2">
+                        <i class="fas fa-clock"></i>
+                        Verification Pending
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Rating Card -->
+                <div class="card bg-gradient-to-br from-amber-500 to-orange-500 text-white">
+                    <div class="card-body text-center p-6">
+                        <div class="text-6xl font-bold mb-2">{{ provider.rating }}</div>
+                        <div class="flex gap-1 justify-center text-2xl mb-2">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= provider.rating %}
+                                    <i class="fas fa-star"></i>
+                                {% else %}
+                                    <i class="far fa-star"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <p class="opacity-90">{{ provider.total_reviews }} review{{ provider.total_reviews|pluralize }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Info Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="card glass-effect">
+            <div class="card-body">
+                <div class="flex items-start gap-3">
+                    <i class="fas fa-map-marker-alt text-2xl text-primary"></i>
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-sm text-base-content/60 mb-1">Address</h3>
+                        <p class="text-lg">{{ provider.address }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card glass-effect">
+            <div class="card-body">
+                <div class="flex items-start gap-3">
+                    <i class="fas fa-map text-2xl text-success"></i>
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-sm text-base-content/60 mb-1">District</h3>
+                        <p class="text-lg">{{ provider.get_district_display }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card glass-effect">
+            <div class="card-body">
+                <div class="flex items-start gap-3">
+                    <i class="fas fa-id-card text-2xl text-info"></i>
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-sm text-base-content/60 mb-1">Aadhar Number</h3>
+                        <p class="text-lg">{{ provider.aadhar_number }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card glass-effect">
+            <div class="card-body">
+                <div class="flex items-start gap-3">
+                    <i class="fas fa-birthday-cake text-2xl text-secondary"></i>
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-sm text-base-content/60 mb-1">Date of Birth</h3>
+                        <p class="text-lg">{{ provider.date_of_birth|date:"d M, Y" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Services Card -->
+    <div class="card glass-effect">
+        <div class="card-body">
+            <h2 class="card-title text-2xl mb-4">
+                <i class="fas fa-tools text-primary mr-2"></i>
+                Your Services
+            </h2>
+            <div class="flex flex-wrap gap-3">
+                {% for service in provider.get_services %}
+                <div class="badge badge-primary badge-lg gap-2">
+                    <i class="fas fa-check"></i>
+                    {{ service }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Reviews -->
+    {% if reviews %}
+    <div class="card glass-effect">
+        <div class="card-body">
+            <h2 class="card-title text-2xl mb-4">
+                <i class="fas fa-star text-warning mr-2"></i>
+                Recent Reviews
+            </h2>
+            <div class="space-y-4">
+                {% for review in reviews %}
+                <div class="card bg-base-200">
+                    <div class="card-body p-4">
+                        <div class="flex items-start justify-between mb-2">
+                            <div>
+                                <p class="font-semibold">{{ review.customer.user.name }}</p>
+                                <p class="text-sm text-base-content/60">{{ review.created_at|date:"d M, Y" }}</p>
+                            </div>
+                            <div class="flex gap-1 text-warning">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= review.rating %}
+                                        <i class="fas fa-star"></i>
+                                    {% else %}
+                                        <i class="far fa-star"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% if review.comment %}
+                        <p class="text-base-content/80">{{ review.comment }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="card glass-effect">
+        <div class="card-body text-center py-12">
+            <i class="fas fa-star text-6xl text-base-content/30 mb-4"></i>
+            <h3 class="text-2xl font-bold mb-2">No Reviews Yet</h3>
+            <p class="text-base-content/70">Complete your first service to receive reviews from customers</p>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Stats Card -->
+    <div class="card glass-effect">
+        <div class="card-body">
+            <h2 class="card-title text-2xl mb-4">
+                <i class="fas fa-chart-line text-success mr-2"></i>
+                Your Stats
+            </h2>
+            <div class="stats stats-vertical lg:stats-horizontal shadow w-full bg-base-200">
+                <div class="stat">
+                    <div class="stat-figure text-primary">
+                        <i class="fas fa-calendar text-3xl"></i>
+                    </div>
+                    <div class="stat-title">Member Since</div>
+                    <div class="stat-value text-2xl">{{ provider.created_at|date:"M Y" }}</div>
+                    <div class="stat-desc">{{ provider.created_at|timesince }} ago</div>
+                </div>
+                
+                <div class="stat">
+                    <div class="stat-figure text-warning">
+                        <i class="fas fa-star text-3xl"></i>
+                    </div>
+                    <div class="stat-title">Average Rating</div>
+                    <div class="stat-value text-2xl">{{ provider.rating }}/5.0</div>
+                    <div class="stat-desc">{{ provider.total_reviews }} total reviews</div>
+                </div>
+
+                <div class="stat">
+                <div class="stat-figure text-success">
+                    <i class="fas fa-tools text-3xl"></i>
+                </div>
+                <div class="stat-title">Services Offered</div>
+                <div class="stat-value text-2xl">{{ provider.get_services|length }}</div>
+                <div class="stat-desc">Professional services</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

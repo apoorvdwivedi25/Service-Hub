@@ -1,0 +1,130 @@
+{% extends 'services/base.html' %}
+
+{% block title %}Customer Registration - ServiceHub{% endblock %}
+
+{% block content %}
+<div class="min-h-screen py-8">
+    <div class="max-w-2xl mx-auto">
+        <div class="text-center mb-8">
+            <a href="{% url 'register_choice' %}" class="btn btn-ghost mb-4">
+                <i class="fas fa-arrow-left mr-2"></i> Back
+            </a>
+        </div>
+        
+        <div class="card glass-effect">
+            <div class="card-body">
+                <div class="text-center mb-8">
+                    <div class="w-24 h-24 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-user-plus text-5xl text-white animate-icon"></i>
+                    </div>
+                    <h2 class="text-4xl font-bold">Customer Registration</h2>
+                    <p class="text-base-content/70 mt-2">Create your account to find services</p>
+                </div>
+                
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    <!-- Name -->
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">
+                                <i class="fas fa-user text-primary mr-2"></i>Full Name
+                                <span class="text-error">*</span>
+                            </span>
+                        </label>
+                        {{ form.name }}
+                        <label class="label">
+                            <span class="label-text-alt text-base-content/60">Enter your complete name</span>
+                        </label>
+                    </div>
+                    
+                    <!-- Phone Number -->
+                    <div class="form-control mt-4">
+                        <label class="label">
+                            <span class="label-text font-semibold">
+                                <i class="fas fa-phone text-primary mr-2"></i>Phone Number
+                                <span class="text-error">*</span>
+                            </span>
+                        </label>
+                        {{ form.phone_number }}
+                        <label class="label">
+                            <span class="label-text-alt text-base-content/60">10-digit phone number starting with 6-9</span>
+                        </label>
+                    </div>
+                    
+                    <!-- District -->
+                    <div class="form-control mt-4">
+                        <label class="label">
+                            <span class="label-text font-semibold">
+                                <i class="fas fa-map-marker-alt text-primary mr-2"></i>District
+                                <span class="text-error">*</span>
+                            </span>
+                        </label>
+                        {{ form.district }}
+                        <label class="label">
+                            <span class="label-text-alt text-base-content/60">Select your district to find nearby services</span>
+                        </label>
+                    </div>
+                    
+                    <!-- Address -->
+                    <div class="form-control mt-4">
+                        <label class="label">
+                            <span class="label-text font-semibold">
+                                <i class="fas fa-home text-primary mr-2"></i>Address (Optional)
+                            </span>
+                        </label>
+                        {{ form.address }}
+                        <label class="label">
+                            <span class="label-text-alt text-base-content/60">Your complete address</span>
+                        </label>
+                    </div>
+                    
+                    <!-- Password -->
+                    <div class="form-control mt-4">
+                        <label class="label">
+                            <span class="label-text font-semibold">
+                                <i class="fas fa-lock text-primary mr-2"></i>Password
+                                <span class="text-error">*</span>
+                            </span>
+                        </label>
+                        {{ form.password }}
+                        <label class="label">
+                            <span class="label-text-alt text-base-content/60">Minimum 6 characters</span>
+                        </label>
+                    </div>
+                    
+                    <!-- Confirm Password -->
+                    <div class="form-control mt-4">
+                        <label class="label">
+                            <span class="label-text font-semibold">
+                                <i class="fas fa-lock text-primary mr-2"></i>Confirm Password
+                                <span class="text-error">*</span>
+                            </span>
+                        </label>
+                        {{ form.confirm_password }}
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <div class="form-control mt-8">
+                        <button type="submit" class="btn btn-primary btn-lg btn-block hover-lift glow">
+                            <i class="fas fa-user-plus mr-2"></i>
+                            Register as Customer
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="divider">OR</div>
+                
+                <div class="text-center">
+                    <p class="text-base-content/70">
+                        Already have an account?
+                        <a href="{% url 'login' user_type='customer' %}" class="link link-primary font-semibold">
+                            Login here
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

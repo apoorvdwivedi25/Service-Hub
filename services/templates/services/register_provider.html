@@ -1,0 +1,199 @@
+{% extends 'services/base.html' %}
+
+{% block title %}Service Provider Registration - ServiceHub{% endblock %}
+
+{% block content %}
+<div class="min-h-screen py-8">
+    <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-8">
+            <a href="{% url 'register_choice' %}" class="btn btn-ghost mb-4">
+                <i class="fas fa-arrow-left mr-2"></i> Back
+            </a>
+        </div>
+        
+        <div class="card glass-effect">
+            <div class="card-body">
+                <div class="text-center mb-8">
+                    <div class="w-24 h-24 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-id-card text-5xl text-white animate-icon"></i>
+                    </div>
+                    <h2 class="text-4xl font-bold">Service Provider Registration</h2>
+                    <p class="text-base-content/70 mt-2">Fill in your details to register as a service provider</p>
+                </div>
+                
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Name -->
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text font-semibold">
+                                    <i class="fas fa-user text-primary mr-2"></i>Full Name
+                                    <span class="text-error">*</span>
+                                </span>
+                            </label>
+                            <input type="text" name="name" class="input input-bordered w-full" placeholder="Enter your full name" required>
+                        </div>
+                        
+                        <!-- Phone Number -->
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text font-semibold">
+                                    <i class="fas fa-phone text-primary mr-2"></i>Phone Number
+                                    <span class="text-error">*</span>
+                                </span>
+                            </label>
+                            <input type="text" name="phone_number" class="input input-bordered w-full" placeholder="10-digit number" maxlength="10" required>
+                        </div>
+                    </div>
+                    
+                    <!-- District -->
+                    <div class="form-control mt-6">
+                        <label class="label">
+                            <span class="label-text font-semibold">
+                                <i class="fas fa-map-marker-alt text-primary mr-2"></i>District
+                                <span class="text-error">*</span>
+                            </span>
+                        </label>
+                        <input type="text" name="district" value="{{ form.district.value|default:'' }}" class="hidden">
+                        {{ form.district }}
+                        <label class="label">
+                            <span class="label-text-alt text-base-content/60">Select your working district</span>
+                        </label>
+                    </div>
+                    
+                    <!-- Address -->
+                    <div class="form-control mt-6">
+                        <label class="label">
+                            <span class="label-text font-semibold">
+                                <i class="fas fa-home text-primary mr-2"></i>Complete Address
+                                <span class="text-error">*</span>
+                            </span>
+                        </label>
+                        <textarea name="address" class="textarea textarea-bordered h-24" placeholder="Enter your complete address" required></textarea>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                        <!-- Aadhar Number -->
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text font-semibold">
+                                    <i class="fas fa-id-card text-primary mr-2"></i>Aadhar Number
+                                    <span class="text-error">*</span>
+                                </span>
+                            </label>
+                            <input type="text" name="aadhar_number" class="input input-bordered w-full" placeholder="12-digit Aadhar" maxlength="12" required>
+                        </div>
+                        
+                        <!-- Date of Birth -->
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text font-semibold">
+                                    <i class="fas fa-birthday-cake text-primary mr-2"></i>Date of Birth
+                                    <span class="text-error">*</span>
+                                </span>
+                            </label>
+                            <input type="date" name="date_of_birth" class="input input-bordered w-full" required>
+                        </div>
+                    </div>
+                    
+                    <!-- Photo Upload -->
+                    <div class="form-control mt-6">
+                        <label class="label">
+                            <span class="label-text font-semibold">
+                                <i class="fas fa-camera text-primary mr-2"></i>Profile Photo (Optional)
+                            </span>
+                        </label>
+                        <input type="file" name="photo" class="file-input file-input-bordered w-full" accept="image/*">
+                        <label class="label">
+                            <span class="label-text-alt text-base-content/60">Upload a professional photo</span>
+                        </label>
+                    </div>
+                    
+                    <!-- Services Section -->
+                    <div class="card bg-base-200 mt-8">
+                        <div class="card-body">
+                            <h3 class="card-title text-2xl mb-4">
+                                <i class="fas fa-tools text-primary mr-2"></i>
+                                Select Services (Maximum 3)
+                            </h3>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <!-- Service 1 -->
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text font-semibold">
+                                            Service 1 <span class="text-error">*</span>
+                                        </span>
+                                    </label>
+                                    {{ form.service1 }}
+                                </div>
+                                
+                                <!-- Service 2 -->
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text font-semibold">Service 2 (Optional)</span>
+                                    </label>
+                                    {{ form.service2 }}
+                                </div>
+                                
+                                <!-- Service 3 -->
+                                <div class="form-control">
+                                    <label class="label">
+                                        <span class="label-text font-semibold">Service 3 (Optional)</span>
+                                    </label>
+                                    {{ form.service3 }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                        <!-- Password -->
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text font-semibold">
+                                    <i class="fas fa-lock text-primary mr-2"></i>Password
+                                    <span class="text-error">*</span>
+                                </span>
+                            </label>
+                            <input type="password" name="password" class="input input-bordered w-full" placeholder="Minimum 6 characters" required>
+                        </div>
+                        
+                        <!-- Confirm Password -->
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text font-semibold">
+                                    <i class="fas fa-lock text-primary mr-2"></i>Confirm Password
+                                    <span class="text-error">*</span>
+                                </span>
+                            </label>
+                            <input type="password" name="confirm_password" class="input input-bordered w-full" placeholder="Re-enter password" required>
+                        </div>
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <div class="form-control mt-8">
+                        <button type="submit" class="btn btn-primary btn-lg btn-block hover-lift glow">
+                            <i class="fas fa-user-plus mr-2"></i>
+                            Register as Service Provider
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="divider">OR</div>
+                
+                <div class="text-center">
+                    <p class="text-base-content/70">
+                        Already have an account?
+                        <a href="{% url 'login' user_type='provider' %}" class="link link-primary font-semibold">
+                            Login here
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

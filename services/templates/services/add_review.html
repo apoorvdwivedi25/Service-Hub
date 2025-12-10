@@ -1,0 +1,102 @@
+{% extends 'services/base.html' %}
+
+{% block title %}
+    {% if existing_review %}Edit Review{% else %}Add Review{% endif %} - ServiceHub
+{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+    <div class="mb-8">
+        <a href="{% url 'service_providers_list' service_code=provider.service1 %}" class="btn btn-ghost">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Providers
+        </a>
+    </div>
+    
+    <div class="card glass-effect">
+        <div class="card-body">
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-star text-4xl text-white"></i>
+                </div>
+                <h2 class="text-3xl font-bold">
+                    {% if existing_review %}Edit Your Review{% else %}Add a Review{% endif %}
+                </h2>
+                <p class="text-xl text-base-content/70 mt-2">for {{ provider.user.name }}</p>
+            </div>
+            
+            <!-- Provider Info -->
+            <div class="card bg-base-200 mb-6">
+                <div class="card-body">
+                    <div class="flex items-center gap-4">
+                        <div class="avatar placeholder">
+                            <div class="w-16 h-16 rounded-full {% if provider.photo %}{% else %}bg-gradient-to-br from-primary to-secondary{% endif %}">
+                                {% if provider.photo %}
+                                    <img src="{{ provider.photo.url }}" alt="{{ provider.user.name }}">
+                                {% else %}
+                                    <span class="text-2xl text-white">{{ provider.user.name|first|upper }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-xl">{{ provider.user.name }}</h3>
+                            <p class="text-base-content/70">{{ provider.get_district_display }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Review Form -->
+            <form method="POST">
+                {% csrf_token %}
+                
+                <!-- Rating -->
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text font-semibold text-lg">
+                            <i class="fas fa-star text-warning mr-2"></i>Your Rating
+                        </span>
+                    </label>
+                    <div class="flex flex-col gap-3 p-4 bg-base-200 rounded-lg">
+                        {% for value, label in form.rating.field.choices %}
+                        <label class="cursor-pointer flex items-center gap-3 hover:bg-base-300 p-3 rounded-lg transition">
+                            <input type="radio" name="rating" value="{{ value }}" class="radio radio-warning" {% if form.rating.value == value|stringformat:"s" %}checked{% endif %} required>
+                            <span class="flex-1 text-lg">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= value %}
+                                        <i class="fas fa-star text-warning"></i>
+                                    {% else %}
+                                        <i class="far fa-star text-base-content/30"></i>
+                                    {% endif %}
+                                {% endfor %}
+                                <span class="ml-2">{{ label }}</span>
+                            </span>
+                        </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Comment -->
+                <div class="form-control mt-6">
+                    <label class="label">
+                        <span class="label-text font-semibold text-lg">
+                            <i class="fas fa-comment text-primary mr-2"></i>Your Review (Optional)
+                        </span>
+                    </label>
+                    {{ form.comment }}
+                    <label class="label">
+                        <span class="label-text-alt text-base-content/60">Share your experience with others</span>
+                    </label>
+                </div>
+                
+                <!-- Submit Button -->
+                <div class="form-control mt-8">
+                    <button type="submit" class="btn btn-warning btn-lg btn-block hover-lift">
+                        <i class="fas fa-paper-plane mr-2"></i>
+                        {% if existing_review %}Update Review{% else %}Submit Review{% endif %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

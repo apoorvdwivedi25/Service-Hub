@@ -1,0 +1,154 @@
+{% extends 'services/base.html' %}
+
+{% block title %}Edit Profile - ServiceHub{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+    <div class="mb-8">
+        <a href="{% if user.user_type == 'provider' %}{% url 'provider_home' %}{% else %}{% url 'customer_home' %}{% endif %}" class="btn btn-ghost">
+            <i class="fas fa-arrow-left mr-2"></i> Back
+        </a>
+    </div>
+    
+    <div class="card glass-effect">
+        <div class="card-body">
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-user-edit text-4xl text-white"></i>
+                </div>
+                <h2 class="text-3xl font-bold">Edit Profile</h2>
+                <p class="text-base-content/70 mt-2">Update your account information</p>
+            </div>
+            
+            <form method="POST" {% if user.user_type == 'provider' %}enctype="multipart/form-data"{% endif %}>
+                {% csrf_token %}
+                
+                <!-- User Name -->
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text font-semibold">
+                            <i class="fas fa-user text-primary mr-2"></i>Full Name
+                        </span>
+                    </label>
+                    {{ user_form.name }}
+                </div>
+                
+                <!-- Phone Number (Read-only) -->
+                <div class="form-control mt-4">
+                    <label class="label">
+                        <span class="label-text font-semibold">
+                            <i class="fas fa-phone text-primary mr-2"></i>Phone Number
+                        </span>
+                    </label>
+                    <input type="text" value="{{ user.phone_number }}" class="input input-bordered" disabled>
+                    <label class="label">
+                        <span class="label-text-alt text-base-content/60">Phone number cannot be changed</span>
+                    </label>
+                </div>
+                
+                {% if user.user_type == 'provider' %}
+                <!-- Provider Photo -->
+                <div class="form-control mt-4">
+                    <label class="label">
+                        <span class="label-text font-semibold">
+                            <i class="fas fa-camera text-primary mr-2"></i>Profile Photo
+                        </span>
+                    </label>
+                    {{ profile_form.photo }}
+                    {% if user.provider_profile.photo %}
+                    <div class="mt-2">
+                        <img src="{{ user.provider_profile.photo.url }}" alt="Current Photo" class="w-32 h-32 rounded-lg object-cover">
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Address -->
+                <div class="form-control mt-4">
+                    <label class="label">
+                        <span class="label-text font-semibold">
+                            <i class="fas fa-home text-primary mr-2"></i>Address
+                        </span>
+                    </label>
+                    {{ profile_form.address }}
+                </div>
+                
+                <!-- District -->
+                <div class="form-control mt-4">
+                    <label class="label">
+                        <span class="label-text font-semibold">
+                            <i class="fas fa-map-marker-alt text-primary mr-2"></i>District
+                        </span>
+                    </label>
+                    {{ profile_form.district }}
+                </div>
+                
+                <!-- Services -->
+                <div class="card bg-base-200 mt-6">
+                    <div class="card-body">
+                        <h3 class="card-title mb-4">
+                            <i class="fas fa-tools text-primary mr-2"></i>
+                            Your Services
+                        </h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text font-semibold">Service 1</span>
+                                </label>
+                                {{ profile_form.service1 }}
+                            </div>
+                            
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text font-semibold">Service 2</span>
+                                </label>
+                                {{ profile_form.service2 }}
+                            </div>
+                            
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text font-semibold">Service 3</span>
+                                </label>
+                                {{ profile_form.service3 }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                {% else %}
+                <!-- Customer Address -->
+                <div class="form-control mt-4">
+                    <label class="label">
+                        <span class="label-text font-semibold">
+                            <i class="fas fa-home text-primary mr-2"></i>Address
+                        </span>
+                    </label>
+                    {{ profile_form.address }}
+                </div>
+                
+                <!-- Customer District -->
+                <div class="form-control mt-4">
+                    <label class="label">
+                        <span class="label-text font-semibold">
+                            <i class="fas fa-map-marker-alt text-primary mr-2"></i>District
+                        </span>
+                    </label>
+                    {{ profile_form.district }}
+                    <label class="label">
+                        <span class="label-text-alt text-base-content/60">Changing district will update your service search area</span>
+                    </label>
+                </div>
+                {% endif %}
+                
+                <!-- Submit Button -->
+                <div class="form-control mt-8">
+                    <button type="submit" class="btn btn-primary btn-lg btn-block hover-lift">
+                        <i class="fas fa-save mr-2"></i>
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

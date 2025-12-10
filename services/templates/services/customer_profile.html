@@ -1,0 +1,77 @@
+{% extends 'services/base.html' %}
+
+{% block title %}My Profile - ServiceHub{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="mb-8">
+        <a href="{% url 'customer_home' %}" class="btn btn-ghost">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Home
+        </a>
+    </div>
+    
+    <div class="card glass-effect">
+        <div class="card-body">
+            <div class="flex items-center gap-6 mb-6">
+                <div class="avatar placeholder">
+                    <div class="w-32 h-32 rounded-full bg-gradient-to-br from-primary to-secondary">
+                        <span class="text-5xl text-white">{{ user.name|first|upper }}</span>
+                    </div>
+                </div>
+                
+                <div class="flex-1">
+                    <h1 class="text-4xl font-bold mb-2">{{ user.name }}</h1>
+                    <p class="text-xl text-base-content/70">
+                        <i class="fas fa-phone text-primary mr-2"></i>
+                        {{ user.phone_number }}
+                    </p>
+                    <div class="badge badge-primary mt-2">Customer Account</div>
+                </div>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="card bg-base-200">
+                    <div class="card-body">
+                        <h3 class="font-semibold mb-2">
+                            <i class="fas fa-map-marker-alt text-primary mr-2"></i>
+                            District
+                        </h3>
+                        <p class="text-lg">{{ customer.get_district_display }}</p>
+                    </div>
+                </div>
+                
+                <div class="card bg-base-200">
+                    <div class="card-body">
+                        <h3 class="font-semibold mb-2">
+                            <i class="fas fa-calendar text-success mr-2"></i>
+                            Member Since
+                        </h3>
+                        <p class="text-lg">{{ customer.created_at|date:"d M, Y" }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            {% if customer.address %}
+            <div class="card bg-base-200 mt-6">
+                <div class="card-body">
+                    <h3 class="font-semibold mb-2">
+                        <i class="fas fa-home text-info mr-2"></i>
+                        Address
+                    </h3>
+                    <p class="text-lg">{{ customer.address }}</p>
+                </div>
+            </div>
+            {% endif %}
+            
+            <div class="card-actions justify-end mt-6">
+                <a href="{% url 'edit_profile' %}" class="btn btn-primary">
+                    <i class="fas fa-edit mr-2"></i>
+                    Edit Profile
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,143 @@
+{% extends 'services/base.html' %}
+
+{% block title %}Welcome to ServiceHub - Your Trusted Service Marketplace{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero min-h-[80vh]">
+    <div class="hero-content text-center">
+        <div class="max-w-4xl">
+            <div class="mb-8 animate-icon">
+                <i class="fas fa-tools text-8xl text-primary"></i>
+            </div>
+            <h1 class="text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent">
+                Welcome to ServiceHub
+            </h1>
+            <p class="text-2xl mb-8 text-base-content/80">
+                Your one-stop solution for all home services across India
+            </p>
+            
+            <div class="flex gap-4 justify-center flex-wrap">
+                <a href="{% url 'login_choice' %}" class="btn btn-primary btn-lg hover-lift glow">
+                    <i class="fas fa-sign-in-alt mr-2"></i>
+                    Login
+                </a>
+                <a href="{% url 'register_choice' %}" class="btn btn-secondary btn-lg hover-lift">
+                    <i class="fas fa-user-plus mr-2"></i>
+                    Register
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
+    <div class="card glass-effect hover-lift card-shine">
+        <div class="card-body items-center text-center">
+            <div class="text-5xl mb-4">
+                <i class="fas fa-user-shield text-primary animate-icon"></i>
+            </div>
+            <h3 class="card-title text-2xl">Verified Providers</h3>
+            <p class="text-base-content/70">All service providers are verified with Aadhar authentication for your safety</p>
+        </div>
+    </div>
+    
+    <div class="card glass-effect hover-lift card-shine">
+        <div class="card-body items-center text-center">
+            <div class="text-5xl mb-4">
+                <i class="fas fa-star text-warning animate-icon" style="animation-delay: 0.2s;"></i>
+            </div>
+            <h3 class="card-title text-2xl">Top Rated</h3>
+            <p class="text-base-content/70">Choose from highly rated professionals based on real customer reviews</p>
+        </div>
+    </div>
+    
+    <div class="card glass-effect hover-lift card-shine">
+        <div class="card-body items-center text-center">
+            <div class="text-5xl mb-4">
+                <i class="fas fa-map-marked-alt text-success animate-icon" style="animation-delay: 0.4s;"></i>
+            </div>
+            <h3 class="card-title text-2xl">District Based</h3>
+            <p class="text-base-content/70">Find service providers in your specific district across India</p>
+        </div>
+    </div>
+    
+    <div class="card glass-effect hover-lift card-shine">
+        <div class="card-body items-center text-center">
+            <div class="text-5xl mb-4">
+                <i class="fas fa-headset text-info animate-icon" style="animation-delay: 0.6s;"></i>
+            </div>
+            <h3 class="card-title text-2xl">24/7 Support</h3>
+            <p class="text-base-content/70">We're here to help you anytime you need assistance</p>
+        </div>
+    </div>
+</div>
+
+<!-- Services Preview -->
+<div class="text-center mb-12">
+    <h2 class="text-4xl font-bold mb-4">Available Services</h2>
+    <p class="text-xl text-base-content/70">Choose from a wide range of professional services</p>
+</div>
+
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-20">
+    <div class="card glass-effect hover-lift text-center p-6">
+        <i class="fas fa-hard-hat text-4xl text-error mb-2"></i>
+        <p class="font-semibold">Mason</p>
+    </div>
+    <div class="card glass-effect hover-lift text-center p-6">
+        <i class="fas fa-paint-roller text-4xl text-info mb-2"></i>
+        <p class="font-semibold">Painter</p>
+    </div>
+    <div class="card glass-effect hover-lift text-center p-6">
+        <i class="fas fa-wrench text-4xl text-primary mb-2"></i>
+        <p class="font-semibold">Plumber</p>
+    </div>
+    <div class="card glass-effect hover-lift text-center p-6">
+        <i class="fas fa-hammer text-4xl text-warning mb-2"></i>
+        <p class="font-semibold">Carpenter</p>
+    </div>
+    <div class="card glass-effect hover-lift text-center p-6">
+        <i class="fas fa-bolt text-4xl text-accent mb-2"></i>
+        <p class="font-semibold">Electrician</p>
+    </div>
+    <div class="card glass-effect hover-lift text-center p-6">
+        <i class="fas fa-th text-4xl text-neutral mb-2"></i>
+        <p class="font-semibold">Tile/Marble</p>
+    </div>
+    <div class="card glass-effect hover-lift text-center p-6">
+        <i class="fas fa-industry text-4xl text-secondary mb-2"></i>
+        <p class="font-semibold">Steel Work</p>
+    </div>
+    <div class="card glass-effect hover-lift text-center p-6">
+        <i class="fas fa-wine-glass text-4xl text-primary mb-2"></i>
+        <p class="font-semibold">Glass Work</p>
+    </div>
+    <div class="card glass-effect hover-lift text-center p-6">
+        <i class="fas fa-leaf text-4xl text-success mb-2"></i>
+        <p class="font-semibold">Gardener</p>
+    </div>
+    <div class="card glass-effect hover-lift text-center p-6">
+        <i class="fas fa-car text-4xl text-error mb-2"></i>
+        <p class="font-semibold">Driver</p>
+    </div>
+</div>
+
+<!-- CTA Section -->
+<div class="card glass-effect">
+    <div class="card-body text-center py-16">
+        <h2 class="text-4xl font-bold mb-4">Ready to Get Started?</h2>
+        <p class="text-xl mb-8 text-base-content/70">Join thousands of satisfied customers and service providers</p>
+        <div class="flex gap-4 justify-center flex-wrap">
+            <a href="{% url 'register_customer' %}" class="btn btn-primary btn-lg hover-lift">
+                <i class="fas fa-user mr-2"></i>
+                Register as Customer
+            </a>
+            <a href="{% url 'register_provider' %}" class="btn btn-secondary btn-lg hover-lift">
+                <i class="fas fa-briefcase mr-2"></i>
+                Register as Provider
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
