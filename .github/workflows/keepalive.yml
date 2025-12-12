@@ -1,0 +1,28 @@
+name: Keep Render Alive
+
+on:
+  schedule:
+    # Run every 15 minutes
+    - cron: "*/15 * * * *"
+  workflow_dispatch: # allows manual trigger
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check time window (IST 8:00–22:00)
+        run: |
+          # Convert current UTC time to IST (+5:30)
+          HOUR_UTC=$(date -u +"%H")
+          MIN_UTC=$(date -u +"%M")
+          TOTAL_MINUTES=$((10#$HOUR_UTC*60 + 10#$MIN_UTC + 330)) # add 5h30m
+          IST_HOUR=$(( (TOTAL_MINUTES/60) % 24 ))
+
+          echo "Current IST hour: $IST_HOUR"
+
+          if [ $IST_HOUR -ge 8 ] && [ $IST_HOUR -lt 22 ]; then
+            echo "Within active hours, pinging Render app..."
+            curl -s -o /dev/null -w "%{http_code}\n" https://service-hub-om4l.onrender.com//health/
+          else
+            echo "Outside active hours, skipping ping."
+          fi
