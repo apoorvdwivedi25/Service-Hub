@@ -7,10 +7,11 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'your-secret-key-here-change-in-production'
-
+#SECRET_KEY = 'your-secret-key-here-change-in-production' # Original line
+SECRET_KEY = '0^wc2c+li0-f@ndq^ckdb$inmxlaw5ve1$*8um3+ufanb(4x7&' # Changed for development/testing purposes
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+#DEBUG = True   # Original line
+DEBUG = os.environ.get("DEBUG", "True") == "True" # Changed to read from environment variable
 
 ALLOWED_HOSTS = ['*']
 

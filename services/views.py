@@ -6,6 +6,7 @@ import requests
 from django.conf import settings
 from django.contrib import messages
 from django.db.models import Q
+from django.http import JsonResponse
 from django.core.exceptions import ObjectDoesNotExist
 from .models import User, ServiceProvider, Customer, Review, DISTRICT_CHOICES, OTPVerification
 from .forms import (ProviderRegistrationForm, CustomerRegistrationForm, LoginForm,
@@ -730,3 +731,7 @@ def logout_view(request):
     logout(request)
     messages.success(request, 'Logged out successfully')
     return redirect('home')
+
+def health(request):
+    # Simple, fast response with no DB queries
+    return JsonResponse({"status": "ok"}, status=200)

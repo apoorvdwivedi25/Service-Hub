@@ -1,9 +1,13 @@
 # services/urls.py
 from django.urls import path
+from django.contrib import admin
+from .views import health
 from . import views
 
 urlpatterns = [
     # Home and login/register choices
+    path("admin/", admin.site.urls),
+    path("health/", health),
     path('', views.home, name='home'),
     path('login-choice/', views.login_choice, name='login_choice'),
     path('register-choice/', views.register_choice, name='register_choice'),
