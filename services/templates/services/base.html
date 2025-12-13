@@ -2,7 +2,7 @@
 <html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>{% block title %}ServiceHub - Modern Service Marketplace{% endblock %}</title>
     
     <!-- Tailwind CSS + DaisyUI -->
@@ -18,6 +18,21 @@
     <style>
         * {
             font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            width: 100%;
+            overflow-x: hidden;
+        }
+        
+        body {
+            width: 100%;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
         }
         
         /* Custom Scrollbar */
@@ -51,6 +66,9 @@
             background: linear-gradient(-45deg, #0f172a, #1e293b, #0f172a, #334155);
             background-size: 400% 400%;
             animation: gradient 15s ease infinite;
+            width: 100%;
+            min-height: 100vh;
+            padding-bottom: 50px;
         }
         
         @keyframes gradient {
@@ -60,7 +78,9 @@
         }
         
         /* Smooth transitions */
-        * {
+        .hover-lift,
+        .card-shine,
+        .btn {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
@@ -115,64 +135,147 @@
         .card-shine:hover::before {
             left: 100%;
         }
+        
+        /* Container fix */
+        .container {
+            width: 100%;
+            max-width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Mobile Responsive Fixes */
+        @media (max-width: 768px) {
+            html, body {
+                width: 100%;
+                overflow-x: hidden;
+            }
+            
+            .gradient-bg {
+                padding-left: 0;
+                padding-right: 0;
+                width: 100%;
+            }
+            
+            .container {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+            }
+            
+            .hero {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            
+            .navbar {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+            }
+            
+            .card {
+                margin-left: 0;
+                margin-right: 0;
+            }
+            
+            /* Fix for hero sections */
+            .hero-content {
+                padding-left: 1rem;
+                padding-right: 1rem;
+                max-width: 100%;
+            }
+            
+            /* Prevent content overflow */
+            * {
+                max-width: 100%;
+            }
+            
+            img {
+                max-width: 100%;
+                height: auto;
+            }
+        }
+        
+        /* Extra small devices */
+        @media (max-width: 480px) {
+            .text-6xl {
+                font-size: 2.5rem;
+            }
+            
+            .text-5xl {
+                font-size: 2rem;
+            }
+            
+            .text-4xl {
+                font-size: 1.75rem;
+            }
+            
+            .text-3xl {
+                font-size: 1.5rem;
+            }
+        }
     </style>
     
     {% block extra_css %}{% endblock %}
 </head>
-<body class="gradient-bg min-h-screen">
+<body class="gradient-bg">
     <!-- Navigation Bar -->
     <div class="navbar glass-effect sticky top-0 z-50 shadow-xl">
-        <div class="navbar-start">
-            <a href="{% url 'home' %}" class="btn btn-ghost text-xl">
-                <i class="fas fa-tools text-primary animate-icon"></i>
-                <span class="ml-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent font-bold">
-                    ServiceHub
-                </span>
-            </a>
-        </div>
-        
-        {% if user.is_authenticated %}
-        <div class="navbar-end gap-2">
-            <!-- Dropdown Menu -->
-            <div class="dropdown dropdown-end">
-                <label tabindex="0" class="btn btn-ghost btn-circle avatar placeholder">
-                    <div class="bg-primary text-primary-content rounded-full w-10">
-                        <span class="text-xl">{{ user.name|first|upper }}</span>
-                    </div>
-                </label>
-                <ul tabindex="0" class="mt-3 z-[1] p-2 shadow-xl menu menu-sm dropdown-content glass-effect rounded-box w-52">
-                    <li class="menu-title">
-                        <span class="text-primary">{{ user.name }}</span>
-                        <span class="text-xs opacity-60">{{ user.phone_number }}</span>
-                    </li>
-                    <li><a href="{% if user.user_type == 'provider' %}{% url 'provider_home' %}{% else %}{% url 'customer_home' %}{% endif %}">
-                        <i class="fas fa-home"></i> Home
-                    </a></li>
-                    <li><a href="{% url 'profile_view' %}">
-                        <i class="fas fa-user"></i> Profile
-                    </a></li>
-                    <li><a href="{% url 'edit_profile' %}">
-                        <i class="fas fa-edit"></i> Edit Profile
-                    </a></li>
-                    <li><a href="{% url 'change_password' %}">
-                        <i class="fas fa-key"></i> Change Password
-                    </a></li>
-                    <li class="border-t border-base-300 mt-2"></li>
-                    <li><a href="{% url 'logout' %}" class="text-error">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </a></li>
-                </ul>
+        <div class="container mx-auto px-2 md:px-4">
+            <div class="flex-1">
+                <a href="{% url 'home' %}" class="btn btn-ghost text-lg md:text-xl px-2">
+                    <i class="fas fa-tools text-primary animate-icon"></i>
+                    <span class="ml-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent font-bold hidden sm:inline">
+                        ServiceHub
+                    </span>
+                    <span class="ml-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent font-bold sm:hidden">
+                        SH
+                    </span>
+                </a>
             </div>
+            
+            {% if user.is_authenticated %}
+            <div class="flex-none gap-2">
+                <!-- Dropdown Menu -->
+                <div class="dropdown dropdown-end">
+                    <label tabindex="0" class="btn btn-ghost btn-circle avatar placeholder">
+                        <div class="bg-primary text-primary-content rounded-full w-10">
+                            <span class="text-xl">{{ user.name|first|upper }}</span>
+                        </div>
+                    </label>
+                    <ul tabindex="0" class="mt-3 z-[1] p-2 shadow-xl menu menu-sm dropdown-content glass-effect rounded-box w-52">
+                        <li class="menu-title">
+                            <span class="text-primary">{{ user.name }}</span>
+                            <span class="text-xs opacity-60">{{ user.phone_number }}</span>
+                        </li>
+                        <li><a href="{% if user.user_type == 'provider' %}{% url 'provider_home' %}{% else %}{% url 'customer_home' %}{% endif %}">
+                            <i class="fas fa-home"></i> Home
+                        </a></li>
+                        <li><a href="{% url 'profile_view' %}">
+                            <i class="fas fa-user"></i> Profile
+                        </a></li>
+                        <li><a href="{% url 'edit_profile' %}">
+                            <i class="fas fa-edit"></i> Edit Profile
+                        </a></li>
+                        <li><a href="{% url 'change_password' %}">
+                            <i class="fas fa-key"></i> Change Password
+                        </a></li>
+                        <li class="border-t border-base-300 mt-2"></li>
+                        <li><a href="{% url 'logout' %}" class="text-error">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+            {% endif %}
         </div>
-        {% endif %}
     </div>
 
     <!-- Toast Messages -->
     {% if messages %}
-    <div class="fixed top-20 right-4 z-50 space-y-2">
+    <div class="toast toast-top toast-end z-50">
         {% for message in messages %}
-        <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'error' %}alert-error{% elif message.tags == 'warning' %}alert-warning{% else %}alert-info{% endif %} shadow-lg animate-in slide-in-from-right">
-            <div>
+        <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'error' %}alert-error{% elif message.tags == 'warning' %}alert-warning{% else %}alert-info{% endif %} shadow-lg">
+            <div class="flex items-center gap-2">
                 <i class="fas {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'error' %}fa-exclamation-circle{% elif message.tags == 'warning' %}fa-exclamation-triangle{% else %}fa-info-circle{% endif %}"></i>
                 <span>{{ message }}</span>
             </div>
@@ -182,17 +285,17 @@
     {% endif %}
 
     <!-- Main Content -->
-    <main class="container mx-auto px-4 py-8">
+    <main class="container mx-auto px-2 md:px-4 py-4 md:py-8">
         {% block content %}{% endblock %}
     </main>
 
     <!-- Footer -->
-    <footer class="footer footer-center p-10 glass-effect text-base-content rounded mt-20">
+    <footer class="footer footer-center p-6 md:p-10 glass-effect text-base-content rounded mt-10 md:mt-20 mx-2 md:mx-4">
         <div class="grid grid-flow-col gap-4">
-            <a class="link link-hover">About</a>
-            <a class="link link-hover">Contact</a>
-            <a class="link link-hover">Privacy</a>
-            <a class="link link-hover">Terms</a>
+            <a class="link link-hover text-sm">About</a>
+            <a class="link link-hover text-sm">Contact</a>
+            <a class="link link-hover text-sm">Privacy</a>
+            <a class="link link-hover text-sm">Terms</a>
         </div>
         <div>
             <div class="grid grid-flow-col gap-4">
@@ -202,18 +305,23 @@
             </div>
         </div>
         <div>
-            <p>© 2025 ServiceHub. All rights reserved.</p>
+            <p class="text-sm">© 2025 ServiceHub. All rights reserved.</p>
         </div>
     </footer>
 
     <script>
         // Auto-hide messages after 5 seconds
         setTimeout(() => {
-            document.querySelectorAll('.alert').forEach(alert => {
-                alert.style.animation = 'slide-out-to-right 0.3s ease-out';
-                setTimeout(() => alert.remove(), 300);
+            const toasts = document.querySelectorAll('.toast .alert');
+            toasts.forEach(toast => {
+                toast.style.animation = 'slide-out-to-right 0.3s ease-out';
+                setTimeout(() => toast.remove(), 300);
             });
         }, 5000);
+        
+        // Prevent horizontal scroll
+        document.documentElement.style.overflowX = 'hidden';
+        document.body.style.overflowX = 'hidden';
     </script>
     
     {% block extra_js %}{% endblock %}

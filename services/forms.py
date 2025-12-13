@@ -3,6 +3,7 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from .models import User, ServiceProvider, Customer, Review, DISTRICT_CHOICES
 from django.core.exceptions import ValidationError
+from django.forms import formset_factory
 
 class LoginForm(AuthenticationForm):
     username = forms.CharField(
@@ -278,4 +279,29 @@ class ForgotPasswordStep3Form(forms.Form):
         if new_password and confirm_password and new_password != confirm_password:
             raise ValidationError("Passwords don't match")
         return cleaned_data
- 
+class WorkPhotoForm(forms.Form):
+    """Form for uploading work photos"""
+    photo = forms.ImageField(
+        required=False,
+        widget=forms.FileInput(attrs={
+            'class': 'file-input file-input-bordered w-full',
+            'accept': 'image/*'
+        })
+    )
+    title = forms.CharField(
+        required=False,
+        max_length=100,
+        widget=forms.TextInput(attrs={
+            'class': 'input input-bordered w-full',
+            'placeholder': 'Photo title (optional)'
+        })
+    )
+    description = forms.CharField(
+        required=False,
+        widget=forms.Textarea(attrs={
+            'class': 'textarea textarea-bordered w-full',
+            'rows': 2,
+            'placeholder': 'Brief description (optional)'
+        })
+    )
+

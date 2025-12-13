@@ -1,0 +1,99 @@
+{% extends 'services/base.html' %}
+
+{% block title %}Add Work Photo - ServiceHub{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <div class="mb-6">
+        <a href="{% url 'edit_profile' %}" class="btn btn-ghost">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Profile
+        </a>
+    </div>
+    
+    <div class="card glass-effect">
+        <div class="card-body">
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 rounded-full bg-gradient-to-br from-secondary to-info flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-images text-4xl text-white"></i>
+                </div>
+                <h2 class="text-3xl font-bold">Add Work Photo</h2>
+                <p class="text-base-content/70 mt-2">
+                    Upload photos of your work ({{ current_count }}/{{ max_photos }} photos)
+                </p>
+            </div>
+            
+            {% if current_count >= max_photos %}
+            <div class="alert alert-error">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>You've reached the maximum of 10 photos. Delete some photos to add new ones.</span>
+            </div>
+            {% else %}
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text font-semibold text-lg">
+                            <i class="fas fa-image text-primary mr-2"></i>Select Photo *
+                        </span>
+                    </label>
+                    <input 
+                        type="file" 
+                        name="photo" 
+                        accept="image/*"
+                        class="file-input file-input-bordered w-full" 
+                        required
+                    >
+                    <label class="label">
+                        <span class="label-text-alt text-base-content/60">
+                            Supported: JPG, PNG, GIF (Max 5MB)
+                        </span>
+                    </label>
+                </div>
+                
+                <div class="form-control mt-4">
+                    <label class="label">
+                        <span class="label-text font-semibold">
+                            <i class="fas fa-heading text-primary mr-2"></i>Title (Optional)
+                        </span>
+                    </label>
+                    <input 
+                        type="text" 
+                        name="title" 
+                        class="input input-bordered w-full"
+                        placeholder="e.g., Bathroom Renovation, Kitchen Cabinets"
+                        maxlength="100"
+                    >
+                </div>
+                
+                <div class="form-control mt-4">
+                    <label class="label">
+                        <span class="label-text font-semibold">
+                            <i class="fas fa-align-left text-primary mr-2"></i>Description (Optional)
+                        </span>
+                    </label>
+                    <textarea 
+                        name="description"
+                        class="textarea textarea-bordered w-full"
+                        rows="3"
+                        placeholder="Brief description of this work..."
+                    ></textarea>
+                </div>
+                
+                <div class="alert alert-info mt-6">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Upload high-quality photos of your completed work to impress customers</span>
+                </div>
+                
+                <div class="form-control mt-6">
+                    <button type="submit" class="btn btn-primary btn-lg btn-block hover-lift">
+                        <i class="fas fa-upload mr-2"></i>
+                        Upload Photo
+                    </button>
+                </div>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

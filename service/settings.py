@@ -13,7 +13,7 @@ SECRET_KEY = '0^wc2c+li0-f@ndq^ckdb$inmxlaw5ve1$*8um3+ufanb(4x7&' # Changed for 
 #DEBUG = True   # Original line
 DEBUG = os.environ.get("DEBUG", "True") == "True" # Changed to read from environment variable
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['service-hub-om4l.onrender.com', 'localhost', '127.0.0.1']
 
 # Application definition
 INSTALLED_APPS = [
@@ -102,6 +102,14 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage" 
 # Media files (Uploaded content)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+FILE_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 5MB
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 5MB
+
+# Create directories if they don't exist
+os.makedirs(STATIC_ROOT, exist_ok=True)
+os.makedirs(MEDIA_ROOT, exist_ok=True)
+
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

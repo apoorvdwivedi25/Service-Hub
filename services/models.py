@@ -169,7 +169,31 @@ class ServiceProvider(models.Model):
     class Meta:
         ordering = ['-rating', '-created_at']
 
+# Add this new model after ServiceProvider model
 
+class ProviderWorkPhoto(models.Model):
+    """Provider's work photos gallery (max 10 photos)"""
+    provider = models.ForeignKey(ServiceProvider, on_delete=models.CASCADE, related_name='work_photos')
+    photo = models.ImageField(upload_to='work_photos/')
+    title = models.CharField(max_length=100, blank=True)
+    description = models.TextField(blank=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-uploaded_at']
+        verbose_name = 'Work Photo'
+        verbose_name_plural = 'Work Photos'
+    
+    def __str__(self):
+        return f"{self.provider.user.name} - Work Photo {self.id}"
+    
+    def delete(self, *args, **kwargs):
+        # Delete the image file when the model is deleted
+        if self.photo:
+            import os
+            if os.path.isfile(self.photo.path):
+                os.remove(self.photo.path)
+        super().delete(*args, **kwargs)
 class Customer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='customer_profile')
     address = models.TextField(blank=True)

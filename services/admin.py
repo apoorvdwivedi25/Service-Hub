@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .models import User, ServiceProvider, Customer, ServiceRequest, Review, OTPVerification
+from .models import User, ServiceProvider, Customer, ServiceRequest, Review, OTPVerification, ProviderWorkPhoto
 
 class CustomUserAdmin(BaseUserAdmin):
     list_display = ('phone_number', 'name', 'user_type', 'is_active', 'is_staff', 'date_joined')
@@ -65,6 +65,13 @@ class OTPVerificationAdmin(admin.ModelAdmin):
     search_fields = ('phone_number',)
     readonly_fields = ('created_at',)
 
+class ProviderWorkPhotoAdmin(admin.ModelAdmin):
+    list_display = ('provider', 'title', 'uploaded_at')
+    list_filter = ('uploaded_at',)
+    search_fields = ('provider__user__name', 'title')
+    readonly_fields = ('uploaded_at',)
+
+admin.site.register(ProviderWorkPhoto, ProviderWorkPhotoAdmin)
 admin.site.register(OTPVerification, OTPVerificationAdmin)
 admin.site.register(User, CustomUserAdmin)
 admin.site.register(ServiceProvider, ServiceProviderAdmin)

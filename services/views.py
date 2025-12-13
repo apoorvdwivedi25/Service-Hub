@@ -8,11 +8,12 @@ from django.contrib import messages
 from django.db.models import Q
 from django.http import JsonResponse
 from django.core.exceptions import ObjectDoesNotExist
-from .models import User, ServiceProvider, Customer, Review, DISTRICT_CHOICES, OTPVerification
+from .models import User, ServiceProvider, Customer, Review, DISTRICT_CHOICES, OTPVerification, ProviderWorkPhoto
 from .forms import (ProviderRegistrationForm, CustomerRegistrationForm, LoginForm,
                    ProfileEditForm, ProviderProfileEditForm, CustomerProfileEditForm,
                    CustomPasswordChangeForm, ReviewForm, DistrictSelectionForm,
-                   ForgotPasswordStep1Form, ForgotPasswordStep2Form, ForgotPasswordStep3Form)
+                   ForgotPasswordStep1Form, ForgotPasswordStep2Form, ForgotPasswordStep3Form, WorkPhotoForm)
+
 
 # Simulated SMS sending (replace with actual SMS gateway in production)
 def send_otp_sms(phone_number, otp):
@@ -643,7 +644,7 @@ def profile_view(request):
 
 @login_required
 def edit_profile(request):
-    """Edit profile"""
+    """Edit profile with work photos for providers"""
     try:
         user = request.user
         
@@ -678,12 +679,16 @@ def edit_profile(request):
             
             if user.user_type == 'provider':
                 profile_form = ProviderProfileEditForm(instance=user.provider_profile)
+                # Get work photos for provider
+                work_photos = user.provider_profile.work_photos.all()
             else:
                 profile_form = CustomerProfileEditForm(instance=user.customer_profile)
+                work_photos = None
         
         return render(request, 'services/edit_profile.html', {
             'user_form': user_form,
-            'profile_form': profile_form
+            'profile_form': profile_form,
+            'work_photos': work_photos,
         })
     except Exception as e:
         messages.error(request, 'An error occurred. Please try again.')
@@ -692,6 +697,95 @@ def edit_profile(request):
             return redirect('provider_home')
         else:
             return redirect('customer_home')
+
+
+@login_required
+def add_work_photo(request):
+    """Add work photo to provider's gallery"""
+    try:
+        if request.user.user_type != 'provider':
+            messages.error(request, 'Only providers can add work photos')
+            return redirect('home')
+        
+        provider = request.user.provider_profile
+        
+        # Check if provider already has 10 photos
+        current_count = provider.work_photos.count()
+        if current_count >= 10:
+            messages.error(request, 'Maximum 10 work photos allowed. Please delete some photos first.')
+            return redirect('edit_profile')
+        
+        if request.method == 'POST':
+            # Manual form handling for better debugging
+            photo_file = request.FILES.get('photo')
+            title = request.POST.get('title', '').strip()
+            description = request.POST.get('description', '').strip()
+            
+            if photo_file:
+                try:
+                    # Create the work photo
+                    work_photo = ProviderWorkPhoto.objects.create(
+                        provider=provider,
+                        photo=photo_file,
+                        title=title,
+                        description=description
+                    )
+                    messages.success(request, 'Work photo added successfully!')
+                    return redirect('edit_profile')
+                except Exception as e:
+                    messages.error(request, f'Error saving photo: {str(e)}')
+                    print(f"Photo save error: {e}")
+            else:
+                messages.error(request, 'Please select a photo to upload')
+        
+        # For GET request
+        current_count = provider.work_photos.count()
+        return render(request, 'services/add_work_photo.html', {
+            'current_count': current_count,
+            'max_photos': 10
+        })
+        
+    except Exception as e:
+        messages.error(request, f'An error occurred: {str(e)}')
+        print(f"Add work photo error: {e}")
+        import traceback
+        traceback.print_exc()
+        return redirect('edit_profile')
+
+@login_required
+def delete_work_photo(request, photo_id):
+    """Delete a work photo"""
+    try:
+        if request.user.user_type != 'provider':
+            messages.error(request, 'Access denied')
+            return redirect('home')
+        
+        photo = get_object_or_404(ProviderWorkPhoto, id=photo_id, provider=request.user.provider_profile)
+        photo.delete()
+        
+        messages.success(request, 'Work photo deleted successfully!')
+        return redirect('edit_profile')
+    except Exception as e:
+        messages.error(request, 'An error occurred. Please try again.')
+        print(f"Delete work photo error: {e}")
+        return redirect('edit_profile')
+
+
+@login_required
+def view_work_gallery(request, provider_phone):
+    """View provider's work gallery"""
+    try:
+        provider = get_object_or_404(ServiceProvider, user__phone_number=provider_phone)
+        work_photos = provider.work_photos.all()
+        
+        return render(request, 'services/work_gallery.html', {
+            'provider': provider,
+            'work_photos': work_photos
+        })
+    except Exception as e:
+        messages.error(request, 'An error occurred. Please try again.')
+        print(f"View gallery error: {e}")
+        return redirect('customer_home')
 
 
 @login_required

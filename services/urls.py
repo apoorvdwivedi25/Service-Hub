@@ -6,7 +6,6 @@ from . import views
 
 urlpatterns = [
     # Home and login/register choices
-    path("admin/", admin.site.urls),
     path("health/", health),
     path('', views.home, name='home'),
     path('login-choice/', views.login_choice, name='login_choice'),
@@ -45,4 +44,8 @@ urlpatterns = [
     
     # Logout
     path('logout/', views.logout_view, name='logout'),
+
+    path('provider/work-photos/add/', views.add_work_photo, name='add_work_photo'),
+    path('provider/work-photos/delete/<int:photo_id>/', views.delete_work_photo, name='delete_work_photo'),
+    path('provider/work-gallery/<str:provider_phone>/', views.view_work_gallery, name='view_work_gallery'),
 ]
